@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Using JavaScript/HTML5 Scheduler in Spring Boot (Open-Source)</title>
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="header">
+    <h1><a href='https://code.daypilot.org/70997/using-javascript-html5-scheduler-in-spring-boot-java'>Using JavaScript/HTML5 Scheduler in Spring Boot (Open-Source)</a></h1>
+    <div><a href="https://javascript.daypilot.org/">DayPilot for JavaScript</a> - HTML5 Calendar/Scheduling Components for JavaScript/Angular/React/Vue</div>
+</div>
+
+<div class="main">
+    <div id="dp"></div>
+    <div class="generated">Generated using <a href="https://builder.daypilot.org/">DayPilot UI Builder</a>.</div>
+</div>
+
+<!-- DayPilot library -->
+<script src="js/daypilot/daypilot-all.min.js"></script>
+
+<style>
+    .scheduler_default_event_inner {
+        padding-left: 10px;
+    }
+    .area-menu {
+        border: 1px solid #999;
+        color: #999;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .area-menu:hover {
+        border: 1px solid #666;
+        color: #666;
+    }
+</style>
+
+<script>
+  const dp = new DayPilot.Scheduler("dp", {
+    startDate: DayPilot.Date.today().firstDayOfMonth(),
+    days: DayPilot.Date.today().daysInMonth(),
+    scale: "Day",
+    timeHeaders: [
+      {groupBy: "Month"},
+      {groupBy: "Day", format: "d"}
+    ],
+    eventHeight: 40,
+    durationBarVisible: false,
+    eventBorderRadius: 20,
+    eventPadding: 10,
+    rowMarginTop: 2,
+    rowMarginBottom: 2,
+    onTimeRangeSelected: async args => {
+      const form = [
+        {
+          name: "Event name",
+          id: "name"
+        }
+      ];
+      const data = {
+        name: "Event"
+      };
+      const modal = await DayPilot.Modal.form(form, data);
+
+      dp.clearSelection();
+      if (modal.canceled) {
+        return;
+      }
+      const params = {
+        start: args.start,
+        end: args.end,
+        text: modal.result.name,
+        resource: args.resource
+      };
+      const {data: result} = await DayPilot.Http.post("/api/events/create", params);
+      dp.events.add(result);
+    },
+    onEventMove: async args => {
+      const params = {
+        id: args.e.id(),
+        start: args.newStart,
+        end: args.newEnd,
+        resource: args.newResource
+      };
+      await DayPilot.Http.post("/api/events/move", params);
+    },
+    onEventResize: async args => {
+      const params = {
+        id: args.e.id(),
+        start: args.newStart,
+        end: args.newEnd,
+        resource: args.e.resource()
+      };
+      await DayPilot.Http.post("/api/events/move", params);
+    },
+    onBeforeEventRender: args => {
+      const defaultColor = "#3F85A4";
+      const color = args.data.color || defaultColor;
+      args.data.backColor = color + "bb";
+      args.data.fontColor = "#ffffff";
+      args.data.borderColor = color;
+      args.data.areas = [
+        {
+          top: 8,
+          right: 6,
+          width: 24,
+          height: 24,
+          padding: 2,
+          symbol: "icons/daypilot.svg#minichevron-down-2",
+          backColor: "#f9f9f9",
+          visibility: "Visible",
+          action: "ContextMenu",
+          cssClass: "area-menu",
+        }
+      ];
+    },
+    contextMenu: new DayPilot.Menu({
+      items: [
+        {
+          text: "Blue",
+          icon: "icon icon-blue",
+          color: "#3F85A4",
+          onClick: (args) => {
+            app.updateColor(args.source, args.item.color);
+          }
+        },
+        {
+          text: "Green",
+          icon: "icon icon-green",
+          color: "#6aa84f",
+          onClick: (args) => {
+            app.updateColor(args.source, args.item.color);
+          }
+        },
+        {
+          text: "Yellow",
+          icon: "icon icon-yellow",
+          color: "#ecb823",
+          onClick: (args) => {
+            app.updateColor(args.source, args.item.color);
+          }
+        },
+        {
+          text: "Red",
+          icon: "icon icon-red",
+          color: "#ee5530",
+          onClick: (args) => {
+            app.updateColor(args.source, args.item.color);
+          }
+        },
+
+      ]
+    })
+  });
+  dp.init();
+
+
+  const app = {
+    async updateColor(e, color) {
+      const params = {
+        id: e.id(),
+        color: color
+      };
+      await DayPilot.Http.post("/api/events/setColor", params);
+      e.data.color = color;
+      dp.events.update(e);
+    },
+    init() {
+      dp.rows.load("/api/resources");
+      dp.events.load("/api/events");
+    }
+  };
+
+  app.init();
+
+</script>
+
+</body>
+</html>
