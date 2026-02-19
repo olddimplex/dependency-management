@@ -11,7 +11,32 @@ It is to demonstrate how a reliable information about dependenceis can be provid
 This project uses [Maven](https://maven.apache.org/) for building, but nothing stops you to do the same with another framework.
 
 At build time, the list of depenedencies is collected using the [Apache Maven Dependency Plugin](https://maven.apache.org/plugins/maven-dependency-plugin/tree-mojo.html) where the output type is <i>graphml</i>.
+This format is directly readable by the powerful [yEd](https://www.yworks.com/yed-live/) diagram editor if you are interested in rendering it as a graph (some manual work would required too).
 The resulting XML file is stored in the classpath, thus making it available at runtime.
+
+In terms of configuration, you only need to add the plugin to the pom.xml file:
+
+    <build>
+        <plugins>
+	        <plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-dependency-plugin</artifactId>
+	            <executions>
+	                <execution>
+	                	<phase>compile</phase>
+	                    <goals>
+	                        <goal>tree</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+			    <configuration>
+			    	<outputType>graphml</outputType>
+			    	<outputFile>src/main/resources/${project.name}-dependency-tree.xml</outputFile>
+			    </configuration>
+	        </plugin>
+        </plugins>
+    </build>
+
 This applies to each of the project's modules, if any.
 The information is aggregated at runtime, so you'll be presented the list of dependencies across all modules.
 Since the dependecies have their own dependencies, the resulting graph is a tree in XML format.
