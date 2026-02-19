@@ -1,11 +1,10 @@
-# Using JavaScript/HTML5 Scheduler in Spring Boot (Open-Source)
+# Dependencies beyond the build phase
 
-This is the code repository for the [Using JavaScript/HTML5 Scheduler in Spring Boot (Open-Source)](https://code.daypilot.org/70997/using-javascript-html5-scheduler-in-spring-boot-java) tutorial by [DayPilot](https://www.daypilot.org/).
+This is the code repository for .
 
 ## Description
-- Includes [DayPilot Lite for JavaScript](https://javascript.daypilot.org/open-source/) - open-source calendar/scheduling components for JavaScript/Angular/React/Vue (Apache License 2.0).
-- This project was generated using the [DayPilot UI Builder](https://builder.daypilot.org/), an online tool for configuring DayPilot components and generating starter projects.
+- Uses [DayPilot Pro for JavaScript](https://javascript.daypilot.org/) - you may need to request a trial version and put it ... in order to see the front-end part, which is actually optional.
+- This project builds on the [Using JavaScript/HTML5 Scheduler in Spring Boot (Open-Source)](https://code.daypilot.org/70997/using-javascript-html5-scheduler-in-spring-boot-java) tutorial by [DayPilot](https://www.daypilot.org/).
 
 ## License
-- The code of this tutorial is licensed under Apache License 2.0.
-- This tutorial may include third-party libraries available under their respective licenses.
+- Same as the origin.
