@@ -61,6 +61,16 @@ There is a context menu for each event, assigned to the right mouse button.
 For the demo, event data is only kept in-memory. 
 If you need persistent data, you can implement the interface otherwise - it is one of the standard Spring Framework interfaces.
 
+## Building and running the demo
+
+Recall, to see the dependencies in the browser, you need to provide your own copy of [DayPilot Pro for JavaScript](https://www.daypilot.org/products/), place and refer to it in the project source tree as shown below. In your case, the version can be different though, you'll get it when downloading the trial.
+
+![screenshot](docs/img/library.png)
+
+Use <i>mvn clean package</i> from the root of the project. The executable .jar file is stored in the <i>target</i> subdirectory. 
+Running it starts a local Web server - watch the console for the port - the context path is <i>/demo</i>.
+For example, the URL to navigate could be [http://localhost:8080/demo/dependency-management.html](http://localhost:8080/demo/dependency-management.html).
+
 Enjoy!
 
 ## License

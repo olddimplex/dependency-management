@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dependencies</title>
+
+    <!-- head -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="dependency-management/helpers/v2/main.css?v=2026.1.6835" type="text/css" rel="stylesheet"/>
+    <script src="dependency-management/js/daypilot/daypilot-all.min.js?v=2026.1.6835"></script>
+    <style>
+	    .navigator_default_main {
+		  box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.2);
+		}
+	</style>
+
+</head>
+<body style="margin: 5px;">
+	<div class="header">
+	    <h1>Direct dependencies maintenance schedule</h1>
+	</div>
+
+    <div class="tools" style="display: flex;">Select locale:
+        <select id="locale" style="margin-right: auto;">
+            <option>ca-es</option>
+            <option>cs-cz</option>
+            <option>da-dk</option>
+            <option>de-at</option>
+            <option>de-ch</option>
+            <option selected="selected">de-de</option>
+            <option>de-lu</option>
+            <option>en-au</option>
+            <option>en-ca</option>
+            <option>en-gb</option>
+            <option>en-us</option>
+            <option>es-es</option>
+            <option>es-mx</option>
+            <option>eu-es</option>
+            <option>fi-fi</option>
+            <option>fr-be</option>
+            <option>fr-ca</option>
+            <option>fr-ch</option>
+            <option>fr-fr</option>
+            <option>fr-lu</option>
+            <option>gl-es</option>
+            <option>it-it</option>
+            <option>it-ch</option>
+            <option>ja-jp</option>
+            <option>ko-kr</option>
+            <option>nb-no</option>
+            <option>nl-nl</option>
+            <option>nl-be</option>
+            <option>nn-no</option>
+            <option>pt-br</option>
+            <option>pl-pl</option>
+            <option>pt-pt</option>
+            <option>ro-ro</option>
+            <option>ru-ru</option>
+            <option>sk-sk</option>
+            <option>sv-se</option>
+            <option>tr-tr</option>
+            <option>uk-ua</option>
+            <option>zh-cn</option>
+        </select>
+        Total rows: <input id="total-rows" type="text" disabled="true" />
+    </div>
+
+    <div style="display: flex;">
+<!-- 
+        <div style="margin-right: 10px;">
+            <div id="nav"></div>
+        </div>
+-->
+        <div style="flex-grow: 1;">
+            <div id="dp"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+    	const apiPrefix = "api/maintenance";
+    	const initialLocale = "en-us";
+/*
+    	const nav = new DayPilot.Navigator("nav", {
+    	    showMonths: 1,
+    	    selectMode: "month",
+    	    locale: initialLocale,
+    	    timeRangeSelectedHandling: "JavaScript",
+    	    onTimeRangeSelected: args => {
+    	        console.log("timeRangeSelected");
+    	        dp.startDate = args.start;
+    	        dp.days = DayPilot.DateUtil.daysDiff(args.start, args.end);
+    	        dp.update();
+    	    }
+    	});
+    	nav.init();
+*/
+        const dp = new DayPilot.Scheduler("dp", {
+        	locale: initialLocale,
+            startDate: DayPilot.Date.today(),
+            days: 365,
+            scale: "Day",
+            timeHeaders: [
+                {groupBy: "Month", format: "MMMM yyyy"},
+                {groupBy: "Day", format: "d"}
+            ],
+            treeEnabled: true,
+            rowMarginTop: 2,
+            rowMarginBottom: 2,
+            treePreventParentUsage: true,
+            heightSpec: "Max",
+            height: 400,
+            eventMovingStartEndEnabled: true,
+            eventResizingStartEndEnabled: true,
+            timeRangeSelectingStartEndEnabled: true,
+            rowHeaderColumns: [
+                {name: "Resource", display: "name"},
+                {name: "ID", display: "id"}
+            ],
+            contextMenu: new DayPilot.Menu({
+                items: [
+                    {
+                        text: "Edit",
+                        onClick: (args) => {
+                        	DayPilot.Modal.form([
+                        	    { name: "Name", id: "text"},
+                        	    { name: "Start", id: "start", dateFormat: "MMMM d, yyyy"},
+                        	    { name: "End", id: "end", dateFormat: "MMMM d, yyyy"},
+                       		], args.source, { autoFocus: true }).then(async function(margs) {
+                       		    console.log("modal", margs);
+                       		    if (!margs.canceled) {
+								  const id = margs.result.id;
+					              const params = {
+			                        start: margs.result.start,
+			                        end: margs.result.end,
+			                        text: margs.result.text,
+			                        resource: margs.result.resource
+			                      };
+                                  await DayPilot.Http.put(apiPrefix + `/events/update/${id}`, params);
+                       		      dp.events.update(margs.result);
+                       		    }
+                       		});
+                        }
+                    },
+                    {
+                        text: "Delete",
+                        onClick: async (args) => {
+                        	const id = args.source.id();
+                            await DayPilot.Http.delete(apiPrefix + `/events/delete/${id}`);
+                            dp.events.remove(args.source);
+                            dp.message("Deleted");
+                        }
+                    },
+                    {text: "-"},
+                    {
+                        text: "Select",
+                        onClick: (args) => {
+                            dp.multiselect.add(args.source);
+                        }
+                    },
+                ]
+            }),
+            bubble: new DayPilot.Bubble({
+                onLoad: (args) => {
+                    const e = args.source;
+                    const text = DayPilot.Util.escapeHtml(e.text());
+                    const start = e.start().toString("M/d/yyyy h:mm tt");
+                    const end = e.end().toString("M/d/yyyy h:mm tt");
+                    args.html = `<div><b>${text}</b></div><div>Start: ${start}</div><div>End: ${end}</div>`;
+                },
+            }),
+            onEventMoved: (args) => {
+                const text = args.e.text();
+                dp.message(`The event has been moved (${text})`);
+            },
+            onEventMoving: (args) => {
+                // see examples at https://doc.daypilot.org/scheduler/event-moving-customization/
+            },
+            onEventResized: async (args) => {
+                const params = {
+                  id: args.e.id(),
+                  start: args.newStart,
+                  end: args.newEnd,
+                  resource: args.e.resource()
+                };
+                await DayPilot.Http.post(apiPrefix + "/events/move", params);
+            },
+            onTimeRangeSelected: async (args) => {
+                const modal = await DayPilot.Modal.prompt("New event name:", "New Event")
+                dp.clearSelection();
+                if (modal.canceled) {
+                    return;
+                }
+                const params = {
+                  start: args.start,
+                  end: args.end,
+                  text: modal.result,
+                  resource: args.resource
+                };
+                const {data: result} = await DayPilot.Http.post(apiPrefix + "/events/create", params);
+                dp.events.add(result);
+            },
+            onEventMove: async (args) => {
+                const params = {
+                  id: args.e.id(),
+                  start: args.newStart,
+                  end: args.newEnd,
+                  resource: args.newResource
+                };
+                await DayPilot.Http.post(apiPrefix + "/events/move", params);
+            },
+            onEventClick: (args) => {
+                DayPilot.Modal.alert(args.e.data.text);
+            },
+            onBeforeEventRender: args => {
+                args.data.areas = [
+                    {
+                        right: 2,
+                        top: "calc(50% - 9px)",
+                        width: 18,
+                        height: 18,
+                        style: "cursor:pointer;",
+                        backColor: "#cccccc88",
+                        borderRadius: "50%",
+                        padding: 2,
+                        fontColor: "#333333",
+                        symbol: "dependency-management/icons/daypilot.svg#threedots-h",
+                        action: "ContextMenu",
+                        toolTip: "Menu"
+                    }
+                ];
+            },
+            onBeforeCornerRender: args => {
+                args.areas = [
+                  {
+                    top: "calc(25% - 10px)",
+                    left: "calc(50% - 10px)",
+                    width: 20,
+                    height: 20,
+                    style: "cursor: pointer",
+                    symbol: "dependency-management/icons/daypilot.svg#calendar",
+                    onClick: args => {
+                    	  const picker = new DayPilot.DatePicker({
+                    		    target: args.originalEvent.currentTarget,
+                    		    resetTarget: false,
+                    		    date: scheduler.startDate,
+                    		    onTimeRangeSelect: args => {
+                    		      args.preventDefault(); // keep the icon intact
+                    		      picker.close();
+                    		      dp.update({ startDate: args.start });
+                    		    }
+                    		  });
+                    		  picker.show();
+						  }
+                  }
+                ];
+            },
+//            separators: [
+//              {location: new DayPilot.Date("2026-09-01"), color: "red", toolTip: "Test"},
+//            ],
+        });
+
+        dp.init();
+        // dp.scrollTo("2026-04-01");
+
+        const app = {
+       	    init() {
+       	        this.addEventHandlers();
+       	        this.loadData();
+       	    },
+       	    addEventHandlers() {
+       	        document.querySelector("#locale").addEventListener("change", function(ev) {
+       	            const locale = this.value;
+
+       	            dp.update({locale});
+       	            nav.update({locale});
+       	        });
+       	    },
+            barColor(i) {
+                const colors = ["#3c78d8", "#6aa84f", "#f1c232", "#cc0000"];
+                return colors[i % 4];
+            },
+            barBackColor(i) {
+                const colors = ["#a4c2f4", "#b6d7a8", "#ffe599", "#ea9999"];
+                return colors[i % 4];
+            },
+            loadData() {
+                dp.rows.load(apiPrefix + "/resources", function(args) {
+                	document.getElementById('total-rows').value = args?.data?.length;
+                });
+                dp.events.load(apiPrefix + "/events");
+                dp.update();
+            },
+        };
+
+        app.init();
+
+    </script>
+
+</body>
+</html>
+
