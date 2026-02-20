@@ -51,7 +51,7 @@ An example initial screen is shown below.
 
 ![screenshot](docs/img/screen-initial.png)
 
-The visible time span is configurable - in this case it is 1 year from the current date. You can use the calendar icon to set the start date of the period.
+The size of the visible time window is configurable - in this case it is 1 year from the current date. You can use the calendar icon to set the start date of the time window.
 
 ![screenshot](docs/img/screen-period.png)
 
@@ -62,7 +62,7 @@ There is a context menu for each event, assigned to the right mouse button.
 ![screenshot](docs/img/screen-event.png)
 
 For the demo, event data is only kept in-memory. 
-If you need persistent data, you can implement the interface otherwise.
+If you need persistent data, you can implement the provided interface otherwise.
 
 ## Building and running the demo
 
