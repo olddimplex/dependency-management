@@ -42,13 +42,16 @@ The information is aggregated at runtime, so you'll be presented the list of dep
 Since the dependecies have their own dependencies, the resulting graph is a tree in XML format.
 We are interested in managing dependencies, so only the direct (top level) nodes are retrieved from the tree and then aggregated.
 
-An API is provided to expose a list of the manageable dependencies to the front-end. 
+An API is provided to expose a list of the manageable dependencies to the front-end.
+
+![screenshot](docs/img/api.png)
+
 This API is designed for use with [DayPilot Pro for JavaScript](https://www.daypilot.org/products/), but could be implemented otherwise too.
 An example initial screen is shown below.
 
 ![screenshot](docs/img/screen-initial.png)
 
-The period is configurable - in this case it is 1 year from the current date. You can use the clendar icon to set the start date of the period.
+The visible time span is configurable - in this case it is 1 year from the current date. You can use the clendar icon to set the start date of the period.
 
 ![screenshot](docs/img/screen-period.png)
 
@@ -70,6 +73,7 @@ Recall, to see the dependencies in the browser, you need to provide your own cop
 Use <i>mvn clean package</i> from the root of the project. The executable .jar file is stored in the <i>target</i> subdirectory. 
 Running it starts a local Web server - watch the console for the port - the context path is <i>/demo</i>.
 For example, the URL to navigate could be [http://localhost:8080/demo/dependency-management.html](http://localhost:8080/demo/dependency-management.html).
+In addition, you can explore the API at [http://localhost:8080/demo/swagger-ui/index.html](http://localhost:8080/demo/swagger-ui/index.html).
 
 Enjoy!
 
