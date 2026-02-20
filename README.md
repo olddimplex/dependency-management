@@ -10,8 +10,8 @@ It is to demonstrate how a reliable information about dependenceis can be provid
 
 This project uses [Maven](https://maven.apache.org/) for building, but nothing stops you to do the same with another framework.
 
-At build time, the list of depenedencies is collected using the [Apache Maven Dependency Plugin](https://maven.apache.org/plugins/maven-dependency-plugin/tree-mojo.html) where the output type is <i>graphml</i>.
-This format is directly readable by the powerful [yEd](https://www.yworks.com/yed-live/) diagram editor if you are interested in rendering it as a graph (some manual work would required too).
+At build time, the list of dependencies is collected using the [Apache Maven Dependency Plugin](https://maven.apache.org/plugins/maven-dependency-plugin/tree-mojo.html) where the output type is <i>graphml</i>.
+This format is directly readable by the powerful [yEd](https://www.yworks.com/yed-live/) diagram editor if you are interested in rendering it as a graph (some manual work would be needed though).
 The resulting XML file is stored in the classpath, thus making it available at runtime.
 
 In terms of configuration, you only need to add the plugin to the pom.xml file:
@@ -39,7 +39,7 @@ In terms of configuration, you only need to add the plugin to the pom.xml file:
 
 This applies to each of the project's modules, if any.
 The information is aggregated at runtime, so you'll be presented the list of dependencies across all modules.
-Since the dependecies have their own dependencies, the resulting graph is a tree in XML format.
+Since the dependencies have their own dependencies, the resulting graph is a tree in XML format.
 We are interested in managing dependencies, so only the direct (top level) nodes are retrieved from the tree and then aggregated.
 
 An API is provided to expose a list of the manageable dependencies to the front-end.
@@ -51,7 +51,7 @@ An example initial screen is shown below.
 
 ![screenshot](docs/img/screen-initial.png)
 
-The visible time span is configurable - in this case it is 1 year from the current date. You can use the clendar icon to set the start date of the period.
+The visible time span is configurable - in this case it is 1 year from the current date. You can use the calendar icon to set the start date of the period.
 
 ![screenshot](docs/img/screen-period.png)
 
@@ -62,7 +62,7 @@ There is a context menu for each event, assigned to the right mouse button.
 ![screenshot](docs/img/screen-event.png)
 
 For the demo, event data is only kept in-memory. 
-If you need persistent data, you can implement the interface otherwise - it is one of the standard Spring Framework interfaces.
+If you need persistent data, you can implement the interface otherwise.
 
 ## Building and running the demo
 
@@ -70,7 +70,7 @@ Recall, to see the dependencies in the browser, you need to provide your own cop
 
 ![screenshot](docs/img/library.png)
 
-Use <i>mvn clean package</i> from the root of the project. The executable .jar file is stored in the <i>target</i> subdirectory. 
+Use <i>mvn clean package</i> from the root of the project. The executable .jar file is stored in the <i>target</i> sub-directory. 
 Running it starts a local Web server - watch the console for the port - the context path is <i>/demo</i>.
 For example, the URL to navigate could be [http://localhost:8080/demo/dependency-management.html](http://localhost:8080/demo/dependency-management.html).
 In addition, you can explore the API at [http://localhost:8080/demo/swagger-ui/index.html](http://localhost:8080/demo/swagger-ui/index.html).
