@@ -3,7 +3,7 @@
 This is the code repository for .
 
 ## Description
-- Uses [DayPilot Pro for JavaScript](https://www.daypilot.org/products/) - you may need to request a trial version and put it ... in order to see the front-end part, which is actually optional.
+- Uses [DayPilot Pro for JavaScript](https://www.daypilot.org/products/) - you may need to request and deploy a trial version in order to see the front-end part, which is actually optional.
 - This project builds on the [Using JavaScript/HTML5 Scheduler in Spring Boot (Open-Source)](https://code.daypilot.org/70997/using-javascript-html5-scheduler-in-spring-boot-java) tutorial by [DayPilot](https://www.daypilot.org/).
 
 It is to demonstrate how a reliable information about dependenceis can be provided at runtime. 
