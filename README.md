@@ -1,6 +1,6 @@
 # Tracking dependencies beyond the build stage
 
-This is the code repository for .
+This is the code repository for the [Tracking Dependencies Beyond the Build Stage](https://dzone.com/articles/tracking-dependencies-beyond-build-stage) article.
 
 ## Description
 - Uses [DayPilot Pro for JavaScript](https://www.daypilot.org/products/) - you may need to request and deploy a trial version in order to see the front-end part, which is actually optional.
